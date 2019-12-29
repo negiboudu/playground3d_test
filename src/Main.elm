@@ -31,9 +31,9 @@ view computer memory =
                 ]
                 |> move3d 0 -500 0
           ]
-        , List.repeat 50 (cube grey grey lightGrey 100)
+        , List.repeat 30 (cube grey grey lightGrey 100)
             |> List.indexedMap (\idx -> move3d (toFloat idx * 300) -300 0)
-        , List.repeat 50 (cube grey lightGrey grey 100)
+        , List.repeat 30 (cube grey lightGrey grey 100)
             |> List.indexedMap (\idx -> move3d (toFloat idx * 300) 300 0)
         , [ cube lightGreen green green 50
                 |> rotate3d 0 memory.r 0
@@ -97,7 +97,7 @@ update computer memory =
 
 init : Memory
 init =
-    { x = 16000
+    { x = 10000
     , y = 0
     , z = 0
     , r = 0
