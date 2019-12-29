@@ -6723,25 +6723,32 @@ var $evancz$elm_playground$Playground$game = F3(
 		return $elm$browser$Browser$document(
 			{init: init, subscriptions: subscriptions, update: update, view: view});
 	});
-var $author$project$Main$init = {r: 0, x: 17000, y: 0, z: 0, zmove: 0};
+var $author$project$Main$Running = {$: 'Running'};
+var $author$project$Main$init = {jumpcount: 0, r: 0, scene: $author$project$Main$Running, x: 16000, y: 0, z: 0, zmove: 0};
+var $author$project$Main$Goal = {$: 'Goal'};
 var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$Main$update = F2(
 	function (computer, memory) {
-		return function (mem) {
-			return (mem.z >= 0) ? _Utils_update(
+		return _Utils_eq(memory.scene, $author$project$Main$Goal) ? memory : function (mem) {
+			return (mem.x <= 0) ? _Utils_update(
 				mem,
-				{zmove: 0}) : _Utils_update(
-				mem,
-				{zmove: mem.zmove + 1});
+				{scene: $author$project$Main$Goal}) : mem;
 		}(
 			function (mem) {
-				return _Utils_update(
+				return (mem.z >= 0) ? _Utils_update(
 					mem,
-					{r: mem.r + 5, x: mem.x - 10, z: mem.z + mem.zmove});
+					{jumpcount: 0, z: 0, zmove: 0}) : _Utils_update(
+					mem,
+					{zmove: mem.zmove + 1});
 			}(
-				computer.mouse.click ? _Utils_update(
-					memory,
-					{zmove: -15}) : memory));
+				function (mem) {
+					return _Utils_update(
+						mem,
+						{r: mem.r + 5, x: mem.x - 10, z: mem.z + mem.zmove});
+				}(
+					(computer.mouse.click && (memory.jumpcount < 2)) ? _Utils_update(
+						memory,
+						{jumpcount: memory.jumpcount + 1, zmove: -15}) : memory)));
 	});
 var $ianmackenzie$elm_units$Quantity$Quantity = function (a) {
 	return {$: 'Quantity', a: a};
@@ -7306,6 +7313,17 @@ var $author$project$Playground3d$camera = F3(
 			});
 		return A3($ianmackenzie$elm_3d_camera$Point3d$Projection$toScreenSpace, perspectiveCamera, rectOfView, point3d);
 	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
 var $author$project$Playground3d$Group3d = function (a) {
 	return {$: 'Group3d', a: a};
 };
@@ -7566,10 +7584,11 @@ var $author$project$Playground3d$cube = F4(
 var $evancz$elm_playground$Playground$Hex = function (a) {
 	return {$: 'Hex', a: a};
 };
+var $evancz$elm_playground$Playground$darkYellow = $evancz$elm_playground$Playground$Hex('#c4a000');
+var $evancz$elm_playground$Playground$green = $evancz$elm_playground$Playground$Hex('#73d216');
 var $evancz$elm_playground$Playground$grey = $evancz$elm_playground$Playground$Hex('#d3d7cf');
+var $evancz$elm_playground$Playground$lightGreen = $evancz$elm_playground$Playground$Hex('#8ae234');
 var $evancz$elm_playground$Playground$lightGrey = $evancz$elm_playground$Playground$Hex('#eeeeec');
-var $evancz$elm_playground$Playground$lightRed = $evancz$elm_playground$Playground$Hex('#ef2929');
-var $evancz$elm_playground$Playground$red = $evancz$elm_playground$Playground$Hex('#cc0000');
 var $elm$core$List$repeatHelp = F3(
 	function (result, n, value) {
 		repeatHelp:
@@ -7707,6 +7726,16 @@ var $evancz$elm_playground$Playground$Shape = F6(
 	function (a, b, c, d, e, f) {
 		return {$: 'Shape', a: a, b: b, c: c, d: d, e: e, f: f};
 	});
+var $evancz$elm_playground$Playground$scale = F2(
+	function (ns, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		var a = _v0.c;
+		var s = _v0.d;
+		var o = _v0.e;
+		var f = _v0.f;
+		return A6($evancz$elm_playground$Playground$Shape, x, y, a, s * ns, o, f);
+	});
 var $evancz$elm_playground$Playground$fade = F2(
 	function (o, _v0) {
 		var x = _v0.a;
@@ -7790,16 +7819,6 @@ var $author$project$Playground3d$removeMaybeType = F2(
 			return A2($elm$core$List$cons, v, list);
 		}
 	});
-var $evancz$elm_playground$Playground$scale = F2(
-	function (ns, _v0) {
-		var x = _v0.a;
-		var y = _v0.b;
-		var a = _v0.c;
-		var s = _v0.d;
-		var o = _v0.e;
-		var f = _v0.f;
-		return A6($evancz$elm_playground$Playground$Shape, x, y, a, s * ns, o, f);
-	});
 var $evancz$elm_playground$Playground$Words = F2(
 	function (a, b) {
 		return {$: 'Words', a: a, b: b};
@@ -7873,6 +7892,8 @@ var $author$project$Playground3d$shape3dto2d = F2(
 						shapes));
 		}
 	});
+var $evancz$elm_playground$Playground$white = $evancz$elm_playground$Playground$Hex('#FFFFFF');
+var $evancz$elm_playground$Playground$yellow = $evancz$elm_playground$Playground$Hex('#edd400');
 var $author$project$Main$view = F2(
 	function (computer, memory) {
 		return _List_fromArray(
@@ -7881,30 +7902,50 @@ var $author$project$Main$view = F2(
 				$author$project$Playground3d$shape3dto2d,
 				A2(
 					$author$project$Playground3d$camera,
-					_Utils_Tuple3(memory.x + 400, 0, -200),
-					_Utils_Tuple3(memory.x - 1000, 0, 0)),
+					_Utils_Tuple3(memory.x + 400, computer.mouse.x, (memory.z - 200) - computer.mouse.y),
+					_Utils_Tuple3(memory.x - 1000, 0, -200)),
 				$author$project$Playground3d$group3d(
-					_Utils_ap(
-						A2(
-							$elm$core$List$indexedMap,
-							function (idx) {
-								return A3($author$project$Playground3d$move3d, idx * 150, -300, 0);
-							},
-							A2(
-								$elm$core$List$repeat,
-								100,
-								A4($author$project$Playground3d$cube, $evancz$elm_playground$Playground$grey, $evancz$elm_playground$Playground$grey, $evancz$elm_playground$Playground$lightGrey, 100))),
-						_Utils_ap(
-							A2(
+					$elm$core$List$concat(
+						_List_fromArray(
+							[
+								_List_Nil,
+								_List_fromArray(
+								[
+									A4(
+									$author$project$Playground3d$move3d,
+									0,
+									-500,
+									0,
+									A2(
+										$author$project$Playground3d$polygon3d,
+										$evancz$elm_playground$Playground$yellow,
+										_List_fromArray(
+											[
+												_Utils_Tuple3(0, 0, 0),
+												_Utils_Tuple3(0, 1000, 0),
+												_Utils_Tuple3(0, 1000, 10),
+												_Utils_Tuple3(0, 0, 10)
+											])))
+								]),
+								A2(
 								$elm$core$List$indexedMap,
 								function (idx) {
-									return A3($author$project$Playground3d$move3d, idx * 150, 300, 0);
+									return A3($author$project$Playground3d$move3d, idx * 300, -300, 0);
 								},
 								A2(
 									$elm$core$List$repeat,
-									100,
+									50,
+									A4($author$project$Playground3d$cube, $evancz$elm_playground$Playground$grey, $evancz$elm_playground$Playground$grey, $evancz$elm_playground$Playground$lightGrey, 100))),
+								A2(
+								$elm$core$List$indexedMap,
+								function (idx) {
+									return A3($author$project$Playground3d$move3d, idx * 300, 300, 0);
+								},
+								A2(
+									$elm$core$List$repeat,
+									50,
 									A4($author$project$Playground3d$cube, $evancz$elm_playground$Playground$grey, $evancz$elm_playground$Playground$lightGrey, $evancz$elm_playground$Playground$grey, 100))),
-							_List_fromArray(
+								_List_fromArray(
 								[
 									A4(
 									$author$project$Playground3d$move3d,
@@ -7916,8 +7957,13 @@ var $author$project$Main$view = F2(
 										0,
 										memory.r,
 										0,
-										A4($author$project$Playground3d$cube, $evancz$elm_playground$Playground$lightRed, $evancz$elm_playground$Playground$red, $evancz$elm_playground$Playground$red, 50)))
-								])))))
+										A4($author$project$Playground3d$cube, $evancz$elm_playground$Playground$lightGreen, $evancz$elm_playground$Playground$green, $evancz$elm_playground$Playground$green, 50)))
+								])
+							])))),
+				_Utils_eq(memory.scene, $author$project$Main$Goal) ? A2(
+				$evancz$elm_playground$Playground$scale,
+				10,
+				A2($evancz$elm_playground$Playground$words, $evancz$elm_playground$Playground$darkYellow, 'CLEAR!')) : A2($evancz$elm_playground$Playground$words, $evancz$elm_playground$Playground$white, '')
 			]);
 	});
 var $author$project$Main$main = A3($evancz$elm_playground$Playground$game, $author$project$Main$view, $author$project$Main$update, $author$project$Main$init);
